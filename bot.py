@@ -103,7 +103,7 @@ async def rank_lookup(ctx, *, summoner_name):
         embed.set_thumbnail(url=pic)
         embed.add_field(name="TFT Ranked", value=f"Rank: {d.tft_dict['TFT']}", inline=True)
         embed.add_field(name="Wins/Losses", value=f" {d.tft_dict['wins']} wins/ {d.tft_dict['losses']} Losses", inline=True)
-        if d.sr_dict.get()['flex'] is not None:
+        if d.sr_dict.get('flex') is not None:
             embed.add_field(name="Flex 5v5", value=f"Rank: {d.sr_dict['flex']}", inline=True)
             embed.add_field(name="Wins/Losses", value=f" {d.sr_dict['wins']} wins/ {d.sr_dict['losses']} Losses",
                              inline=True)
