@@ -3,3 +3,4 @@ venv/*
 /**.idea
 token.txt
 api_key.txt
+/**.vscode

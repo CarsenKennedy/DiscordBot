@@ -7,7 +7,6 @@ import discord
 # Add own Riot API key
 api = open("api_key.txt", "r").read().rstrip()
 
-
 class User:
     def get_summoner_id(self):
         # Expires: Fri, Aug 16th, 2019
@@ -16,24 +15,47 @@ class User:
         if response.status_code == 200:
             pass
         elif response.status_code == 403:
-            print('Change API key')
+            self.API = False
+            return
         elif response.status_code == 404:
-            print('404 Error')
             return
         else:
             print(response.status_code)
         account_ids = response.json()
-        return account_ids['id']
+        self.id = account_ids['id']
 
     def __init__(self, summoner_name):
+        self.id = None
         self.name = summoner_name
         self.sr_dict = dict()
         self.solo_dict = dict()
         self.tft_dict = dict()
+        self.API = None
 
     def get_ranked_info(self):
-        summoner_id = self.get_summoner_id()
+        self.get_summoner_id()
+        summoner_id = self.id
+        if self.id == None:
+            return None
         url = 'https://na1.api.riotgames.com/lol/league/v4/entries/by-summoner/' + summoner_id + '?api_key=' + api
+        response = requests.get(url)
+        if response.status_code == 200:
+            pass
+        elif response.status_code == 403:
+            return
+        elif response.status_code == 404:
+            return
+        else:
+            print(response.status_code)
+        list_of_stats = response.json()
+        return list_of_stats
+        
+    def get_tft_ranked_info(self):
+        self.get_summoner_id()
+        summoner_id = self.id
+        if self.id == None:
+            return None
+        url = 'https://na1.api.riotgames.com/tft/league/v1/entries/by-summoner/' + summoner_id + '?api_key=' + api
         response = requests.get(url)
         if response.status_code == 200:
             pass
@@ -48,6 +70,8 @@ class User:
 
     def check_solo_rank(self):
         list_of_stats = self.get_ranked_info()
+        if list_of_stats == None:
+            return None
         for index in list_of_stats:
             if 'SOLO' in index['queueType']:
                 tier = index['tier']
@@ -118,7 +142,9 @@ class User:
                     return None
 
     def check_tft_rank(self):
-        list_of_stats = self.get_ranked_info()
+        list_of_stats = self.get_tft_ranked_info()
+        if list_of_stats == None:
+            return None
         for index in list_of_stats:
             if 'TFT' in index['queueType']:
                 tier = index['tier']
@@ -190,6 +216,8 @@ class User:
 
     def check_flex_rank(self):
         list_of_stats = self.get_ranked_info()
+        if list_of_stats == None:
+            return None
         for index in list_of_stats:
             if 'FLEX_SR' in index['queueType']:
                 tier = index['tier']
@@ -258,9 +286,6 @@ class User:
                     self.sr_dict['url'] = pic
                 else:
                     return None
-
-
-
 
 
 

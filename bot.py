@@ -3,11 +3,10 @@ import random
 from discord.ext import commands
 from riot_api import *
 
-# Your own discord bot token goes here
+# Create your own token.txt file
 Token = open("token.txt", "r").read().rstrip()
 
 client = commands.Bot(command_prefix='$')
-
 
 @client.event
 async def on_ready():
@@ -69,13 +68,10 @@ async def rank_lookup(ctx, *, summoner_name):
         embed = discord.Embed(title=f'{d.name}', url="https://na.op.gg/summoner/userName={}".format(d.name), color=0x2e64ec)
         embed.set_author(name=f"{summoner_name}", url=f'https://na.op.gg/summoner/userName={d.name}')
 
-    if d.solo_dict.get('solo') is None and d.tft_dict.get('TFT') is None and d.sr_dict.get('flex') is None:
+    if d.solo_dict.get('solo') is None and d.tft_dict.get('TFT') is None and d.sr_dict.get('flex') is None and d.API is False:
+        embed.add_field(name='Bot is not busted', value='Change API key')
+    elif d.solo_dict.get('solo') is None and d.tft_dict.get('TFT') is None and d.sr_dict.get('flex') is None  and d.API is not False:
         embed.add_field(name='No Ranked games found', value='Play some ranked...like anything')
-        # else:
-        # pic = d.solo_dict["url"]
-        # embed.add_field(name="Ranked Solo Duo", value=f"Rank: {d.solo_dict['solo']}", inline=True)
-        # embed.add_field(name="Wins/Losses", value=f"{d.solo_dict['wins']} Wins / {d.solo_dict['losses']} Losses", inline=True)
-        # if d.check_tft_rank() is None:
     elif d.solo_dict.get('solo') is not None:
         pic = d.solo_dict["url"]
         embed.set_thumbnail(url=pic)
@@ -117,13 +113,6 @@ async def rank_lookup(ctx, *, summoner_name):
                         inline=True)
     else:
         pass
-        # pic = d.solo_dict["url"]
-        # embed.add_field(name="Ranked Solo Duo", value=f"Rank: {d.solo_dict['solo']}", inline=True)
-        # embed.add_field(name="Wins/Losses", value=f"{d.solo_dict['wins']} Wins / {d.solo_dict['losses']} Losses", inline=True)
-        # embed.add_field(name="TFT Ranked", value=f"Rank: {d.tft_dict['TFT']}", inline=True)
-        # embed.add_field(name="Wins/Losses", value=f" {d.tft_dict['wins']} wins/ {d.tft_dict['losses']} Losses", inline=True)
-        # embed.add_field(name="Flex 5v5", value=f"Rank: {d.sr_dict['flex']}", inline=True)
-        # embed.add_field(name="Wins/Losses", value=f" {d.sr_dict['wins']} wins/ {d.sr_dict['losses']} Losses", inline=True)
 
     await ctx.send(embed=embed)
 
